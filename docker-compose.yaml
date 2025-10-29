@@ -1,0 +1,74 @@
+volumes:
+  postgres-volume:
+    external: false
+
+  postiz-redis-data:
+    external: false
+
+  postiz-config:
+    external: false
+
+  postiz-uploads:
+    external: false
+
+networks:
+  postiz-network:
+  ogna:
+    external: true
+
+services:
+  postiz-redis:
+    image: redis:7.2
+    container_name: postiz-redis
+    restart: always
+    healthcheck:
+      test: redis-cli ping
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - postiz-redis-data:/data
+    networks:
+      - postiz-network
+    env_file:
+      - .env
+  postiz-postgres:
+    image: postgres:17-alpine
+    container_name: postiz-postgres
+    restart: always
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    networks:
+      - postiz-network
+    healthcheck:
+      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    env_file:
+      - .env
+  postiz:
+    image: ghcr.io/gitroomhq/postiz-app:latest
+    container_name: postiz
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postiz-config:/config/
+      - postiz-uploads:/uploads/
+    expose:
+      - 5000
+    networks:
+      - postiz-network
+    depends_on:
+      postiz-postgres:
+        condition: service_healthy
+      postiz-redis:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.postiz.rule=Host(`postiz.${OGNA_USER}.${OGNA_HOST}`)"
+      - "traefik.http.routers.postiz.entrypoints=websecure"
+      - "traefik.http.routers.postiz.tls.certresolver=hetzner"
+      - "traefik.http.services.postiz.loadbalancer.server.port=5000"
+      - "traefik.docker.network=ogna"
