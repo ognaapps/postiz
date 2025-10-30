@@ -1,9 +1,16 @@
 volumes:
-  postgres-volume:
-    external: false
-
-  postiz-redis-data:
-    external: false
+  redis_storage:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/volume-db/postiz/redis
+      o: bind
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/volume-db/postiz/postgress
+      o: bind
 
   postiz-config:
     external: false
@@ -27,7 +34,7 @@ services:
       timeout: 3s
       retries: 3
     volumes:
-      - postiz-redis-data:/data
+      - redis_storage:/data
     networks:
       - postiz-network
     env_file:
@@ -37,7 +44,7 @@ services:
     container_name: postiz-postgres
     restart: always
     volumes:
-      - postgres-volume:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - postiz-network
     healthcheck:
