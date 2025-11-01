@@ -141,7 +141,7 @@ class ComposeApp:
             'EMAIL_FROM_ADDRESS':self.smtp_data['sender']                      
         }
 
-        self.env_variables['DATABASE_URL'] = f"postgresql://{self.env_variables['POSTGRES_USER']}:{self.env_variables['POSTGRES_PASSWORD']}@postiz-postgres:5432/{self.env_variables['POSTGRES_DB']}        
+        self.env_variables['DATABASE_URL'] = f"postgresql://{self.env_variables['POSTGRES_USER']}:{self.env_variables['POSTGRES_PASSWORD']}@postiz-postgres:5432/{self.env_variables['POSTGRES_DB']}"        
 
         for key, value in self.env_variables.items():
             self.env_variables[key] = existing_vars.get(key,value)
