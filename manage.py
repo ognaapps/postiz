@@ -119,6 +119,7 @@ class ComposeApp:
             'MAIN_URL': f"{self.protocol}://{PROJECT_NAME}.{self.user}.{self.host}",
             'FRONTEND_URL': f"{self.protocol}://{PROJECT_NAME}.{self.user}.{self.host}",
             'NEXT_PUBLIC_BACKEND_URL': f"{self.protocol}://{PROJECT_NAME}.{self.user}.{self.host}/api",
+            'DATABASE_URL': "postgresql://postiz-user:postiz-password@postiz-postgres:5432/postiz-db-local"
             'JWT_SECRET': generate_clear_password(),
             'REDIS_URL': "redis://postiz-redis:6379",
             'BACKEND_INTERNAL_URL': "http://localhost:3000",
@@ -140,6 +141,8 @@ class ComposeApp:
             'EMAIL_FROM_NAME':"Ogna",
             'EMAIL_FROM_ADDRESS':self.smtp_data['sender']                      
         }
+
+        self.env_variables['DATABASE_URL'] = f"postgresql://{self.env_variables['POSTGRES_USER']}:{self.env_variables['POSTGRES_PASSWORD']}@postiz-postgres:5432/{self.env_variables['POSTGRES_DB']}        
 
         for key, value in self.env_variables.items():
             self.env_variables[key] = existing_vars.get(key,value)
