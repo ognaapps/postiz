@@ -119,7 +119,6 @@ class ComposeApp:
             'MAIN_URL': f"{self.protocol}://{PROJECT_NAME}.{self.user}.{self.host}",
             'FRONTEND_URL': f"{self.protocol}://{PROJECT_NAME}.{self.user}.{self.host}",
             'NEXT_PUBLIC_BACKEND_URL': f"{self.protocol}://{PROJECT_NAME}.{self.user}.{self.host}/api",
-            'DATABASE_URL': "postgresql://postiz-user:postiz-password@postiz-postgres:5432/postiz-db-local"
             'JWT_SECRET': generate_clear_password(),
             'REDIS_URL': "redis://postiz-redis:6379",
             'BACKEND_INTERNAL_URL': "http://localhost:3000",
